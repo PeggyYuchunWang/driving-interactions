@@ -7,7 +7,7 @@ from trajectory import Trajectory
 import feature
 
 class Car(object):
-    def __init__(self, dyn, x0, color='yellow', T=5):
+    def __init__(self, dyn, x0, color='yellow', T=5, controls='arrows'):
         self.data0 = {'x0': x0}
         self.bounds = [(-1., 1.), (-1., 1.)]
         self.T = T
@@ -18,6 +18,7 @@ class Car(object):
         self.linear.x0.set_value(x0)
         self.color = color
         self.default_u = np.zeros(self.dyn.nu)
+        self.controls = controls
     def reset(self):
         self.traj.x0.set_value(self.data0['x0'])
         self.linear.x0.set_value(self.data0['x0'])
@@ -52,7 +53,7 @@ class UserControlledCar(Car):
     def control(self, steer, gas):
         if self.fixed_control is not None:
             self.u = self.fixed_control[0]
-            print self.fixed_control[0]
+            print "THIS IS FIXED CONTROL" * 3, self.fixed_control[0]
             if len(self.fixed_control)>1:
                 self.fixed_control = self.fixed_control[1:]
         elif self.follow is None:

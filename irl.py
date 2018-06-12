@@ -31,10 +31,8 @@ def run_irl(world, car, reward, theta, data):
     L = tt.dot(g, tt.dot(tn.MatrixInverse()(H), g))+tt.log(tn.Det()(-H))
     for _ in gen():
         pass
-    #optimizer = utils.Maximizer(L, [theta], gen=gen, method='gd', eps=0.1, debug=True, iters=1000, inf_ignore=10)
-    optimizer = utils.Maximizer(L, [theta], gen=gen, method='gd', eps=0.1, debug=True, iters=100, inf_ignore=10)
+    optimizer = utils.Maximizer(L, [theta], gen=gen, method='gd', eps=0.1, debug=True, iters=1000, inf_ignore=10)
     optimizer.maximize()
-    print("Getting Theta ...")
     print theta.get_value()
 
 
@@ -64,22 +62,19 @@ if __name__ == '__main__':
                     'x0': [xseq[t-1] for xseq in xs],
                     'u': [useq[t:t+T] for useq in us]
                 }
-                #print("point: {}".format(point))
                 train.append(point)
     theta = utils.vector(5)
     theta.set_value(np.array([1., -50., 10., 10., -60.]))
-    #theta.set_value(np.array([2., -5., 10., 10., -60.]))
     r = 0.1*feature.control()
+    #features, thetas are weights
     for lane in the_world.lanes:
         r = r + theta[0]*lane.gaussian()
     for fence in the_world.fences:
         r = r + theta[1]*lane.gaussian()
     for road in the_world.roads:
         r = r + theta[2]*road.gaussian(10.)
-    #r = r + theta[3]*feature.speed(1)
-    r = r + theta[3]*feature.speed(30)
+    r = r + theta[3]*feature.speed(1.)
     for car in the_world.cars:
         if car!=the_car:
             r = r + theta[4]*car.traj.gaussian()
-            #r = r + theta[3]*car.traj.gaussian()
     run_irl(the_world, the_car, r, theta, train)

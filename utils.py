@@ -4,8 +4,6 @@ import theano.tensor.slinalg as ts
 import scipy.optimize
 import numpy as np
 import time
-# debug
-import traceback
 
 def extract(var):
     return th.function([], var, mode=th.compile.Mode(linker='py'))()
@@ -121,7 +119,7 @@ class Maximizer(object):
         self.func = th.function(self.new_vs, [-self.f, -self.df], givens=zip(self.vs, self.new_vs))
         def f_and_df(x0):
             if self.debug:
-                print(x0)
+                print x0
             s = None
             N = 0
             for _ in self.gen():
@@ -130,10 +128,8 @@ class Maximizer(object):
                         v.set_value(x0[a:b])
                     self.pre()
                 res = self.func(*[x0[a:b] for a, b in self.sz])
-                #print("res: {}".format(res))
                 #if np.isnan(res[0]).any() or np.isnan(res[1]).any() or (np.abs(res[0])>self.inf_ignore).any() or (np.abs(res[1])>self.inf_ignore).any():
-                if np.isnan(res[0]).any() or np.isnan(res[1]).any() or (np.abs(res[1])>self.inf_ignore).any():
-                    continue
+                    #continue
                 if s is None:
                     s = res
                     N = 1

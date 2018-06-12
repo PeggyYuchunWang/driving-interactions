@@ -4,6 +4,7 @@ import visualize
 import world
 import theano as th
 from car import UserControlledCar
+import pickle
 
 th.config.optimizer_verbose = True
 th.config.allow_gc = False

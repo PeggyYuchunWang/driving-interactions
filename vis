@@ -4,6 +4,7 @@ import getopt
 import world
 import theano as th
 import visualize
+import pickle
 
 th.config.optimizer_verbose = True
 th.config.allow_gc = False
